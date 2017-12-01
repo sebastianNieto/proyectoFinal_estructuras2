@@ -1,25 +1,34 @@
-/* Funciones del programa. Utilizando arboles binarios
-*  Fecha: 25/11/2017
+/* Funciones referentes al login de usuarios. Utilizando arboles binarios
+*  Fecha: 30/11/2017
 *  Elaborado por: John Sebastian Nieto gil
 *  Elaborado por: Ricardo Andres Villalobos
 */
 #define RESERVAR_USUARIO (Usuario *)malloc(sizeof(Usuario))
 
+//Estructura tipo lista arbol
 struct Usuario
 {
 	int id;
 	char user[10];
 	char pass[10];
 	Usuario *izq, *der;
-}usu, *pUsu = &usu;
+}usu, *pUsu = &usu; //uVariables tipo usuario para el manejo de archivos
 
 int idUser = 0;
 //Prototipo de funciones
 
-Usuario *crearUsuario(char user[], char pass[]);
-void insertarUsuario(Usuario *&usuario, char user[], char pass[]);
-int busqueda(Usuario *usuario, char user[], char pass[]);
 
+//Prototipo de funciones
+bool guardarUsuarioArchivo(Usuario* );
+void mostrarArbol(Usuario *, int);
+int loguear(Usuario *);
+bool inicializarUsuarios(Usuario* &);
+Usuario *crearUsuario(char [], char []);
+void insertarUsuario(Usuario *&, char [], char []);
+int busqueda(Usuario *usuario, char [], char []);
+
+
+//Carga los usuarios almecenados desde un archuvo
 bool inicializarUsuarios(Usuario* &nodo)
 {
 	FILE *archivo;
@@ -34,14 +43,13 @@ bool inicializarUsuarios(Usuario* &nodo)
 	{
 		while(fread(pUsu, sizeof(*pUsu), 1, archivo))
 		{
-			printf("\npU: %s", pUsu->user);
 			insertarUsuario(nodo, pUsu->user, pUsu->pass);
-			//insertarUsuario(nodo, nodo->user, nodo->pass);
 		}
 	}
 	fclose(archivo);
 }
 
+//Guarda los datos del struct en un archivo
 bool guardarUsuarioArchivo(Usuario* nuevoNodo)
 {
 	FILE *archivo;
@@ -58,6 +66,7 @@ bool guardarUsuarioArchivo(Usuario* nuevoNodo)
 }
 
 
+//crea un nuevo nodo para el usuario
 Usuario *crearUsuario(char user[], char pass[])
 {
 	Usuario *nuevoNodo = RESERVAR_USUARIO;
@@ -71,6 +80,7 @@ Usuario *crearUsuario(char user[], char pass[])
 	return nuevoNodo;
 }
 
+//Inserta los usuario en el arbol, ordenandos por nombre de usuario
 void insertarUsuario(Usuario *&usuario, char user[], char pass[])
 {
 	char userLista[10];
@@ -104,7 +114,9 @@ void insertarUsuario(Usuario *&usuario, char user[], char pass[])
 	}
 }
 
-void mostrarArbol(Usuario *usuario, int cont){
+//muestra todos los usuarios del arbol en recorrido inorden
+void mostrarArbol(Usuario *usuario, int cont)
+{
 	if (usuario == NULL)
 	{
 		return;
@@ -121,6 +133,8 @@ void mostrarArbol(Usuario *usuario, int cont){
 	}
 }
 
+
+//Solicita el loggin y retorna si es autenticado.
 int loguear(Usuario *usuario)
 {
 	int loggin = 0;
@@ -151,7 +165,9 @@ int loguear(Usuario *usuario)
 	return loggin;
 }
 
-int busqueda(Usuario *usuario, char user[], char pass[]){
+//Verifica si el usuario y la contraseña son correcta
+int busqueda(Usuario *usuario, char user[], char pass[])
+{
 	if(usuario == NULL)
 	{
 		return 0;

@@ -1,5 +1,5 @@
 /* Menú que muestra las diferentes opciones para navegar por el programa
-*  Fecha: 25/11/2017
+*  Fecha: 30/11/2017
 *  Elaborado por: John Sebastian Nieto gil
 *  Elaborado por: Ricardo Andres Villalobos
 */
@@ -8,7 +8,9 @@
 
 
 void menuMusica(int, ListaReproduccion*);
+int menu();
 
+//Variables globales para los contadores de id en los arboles de musica y listas de reproduccion
 int id = 0;
 int idContarMusic = 0;
 
@@ -111,6 +113,7 @@ int menu()
 	}while(opcion != 0);
 }
 
+//Muestra el menu de canciones despues del logueo
 void menuMusica(int loggin, ListaReproduccion* listaReproduccion)
 {
 	int opcion = 0;
@@ -129,7 +132,7 @@ void menuMusica(int loggin, ListaReproduccion* listaReproduccion)
 	GeneroArtista* genero = NULL;
 	GeneroArtista* artista = NULL;
 	Music* music = NULL;
-	Music* musicDuracion = NULL;
+	Music* musicDuracion = NULL; //para almacenar el nuevo arbol ordenado por tiempo
 	
 
 	GeneroArtista* idGenero = NULL;
@@ -212,7 +215,6 @@ void menuMusica(int loggin, ListaReproduccion* listaReproduccion)
 					system("clear");
 					printf("\n1. Mostrar musica ordenada por nombre");
 					printf("\n2. Mostrar musica ordenada por Duracion");
-					//printf("\n3. Mostrar musica ordenada por Estrellas");
 					printf("\n0. Salir");
 					printf("\n\nIngrese la opcion: ");
 					scanf("%d", &subOpcion);
@@ -371,6 +373,8 @@ void menuMusica(int loggin, ListaReproduccion* listaReproduccion)
 										listarLista(listaReproduccion, loggin);
 										printf("\nIngrese id de lista: ");
 										scanf("%d", &idLista);
+										//El tercer parametro es recibido por referencia, y guardara el enlace principal del arbol,
+										//a diferencia del primero que se utiliza para recorrer el arbol y obtener el nodo a eliminar
 										eliminar(listaReproduccion, idLista, listaReproduccion);
 										getchar();
 										PAUSE;

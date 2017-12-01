@@ -1,5 +1,12 @@
+/* Funciones referentes al manejo de generos y artistas musicales de la aplicación. Utilizando arboles binarios
+*  Fecha: 30/11/2017
+*  Elaborado por: John Sebastian Nieto gil
+*  Elaborado por: Ricardo Andres Villalobos
+*/
+
 #define RESERVAR_GENERO_ARTISTA (GeneroArtista *)malloc(sizeof(GeneroArtista))
 
+//Estructura tipo lista doblemente enlazada
 struct GeneroArtista
 {
 	int id;
@@ -7,6 +14,13 @@ struct GeneroArtista
 	GeneroArtista *siguiente, *anterior;
 };
 
+//Prototipo de funciones
+void crearGeneroArtista(GeneroArtista *&, char []);
+void mostrarGeneroArtista(GeneroArtista*);
+GeneroArtista* asignarGeneroArtista(GeneroArtista*);
+
+
+//Crea un nuevo nodo para la lista, puede ser para un nuevo genero o nuevo artista
 void crearGeneroArtista(GeneroArtista *&lista, char generoArtista[])
 {
 
@@ -30,6 +44,7 @@ void crearGeneroArtista(GeneroArtista *&lista, char generoArtista[])
 	}
 }
 
+//Muestra todos los elementos de la lista, puede ser artistas o generos
 void mostrarGeneroArtista(GeneroArtista* lista)
 {
 	GeneroArtista* aux = lista;
@@ -42,6 +57,7 @@ void mostrarGeneroArtista(GeneroArtista* lista)
 	while(aux != lista);
 }
 
+//Retorna el puntero del nodo, para ser asignado a una cancion
 GeneroArtista* asignarGeneroArtista(GeneroArtista* lista)
 {
 	int id = 0;

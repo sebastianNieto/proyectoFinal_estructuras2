@@ -1,9 +1,15 @@
+/* Funciones referentes al ingreso, manejo de canciones y listas de reproducción de la aplicacion. Utilizando arboles binarios
+*  Fecha: 30/11/2017
+*  Elaborado por: John Sebastian Nieto gil
+*  Elaborado por: Ricardo Andres Villalobos
+*/
+
 #define RESERVAR_MUSIC (Music *)malloc(sizeof(Music))
 #define RESERVAR_LISTA (ListaReproduccion *)malloc(sizeof(ListaReproduccion))
 #define RESERVAR_MEMORIA_LISTA (CancionesLista *)malloc(sizeof(CancionesLista))
 
 
-
+//Estructura tipo arbol
 struct Music
 {
 	int id;
@@ -16,12 +22,14 @@ struct Music
 	Music* padre;
 };
 
+//Estructura tipo lista simplemente enlazada
 struct CancionesLista
 {
 	int idMusic;
 	CancionesLista* siguiente;
 };
 
+//Estructura tipo arbol
 struct ListaReproduccion
 {
 	int id;
@@ -32,49 +40,35 @@ struct ListaReproduccion
 	ListaReproduccion* padre;
 };
 
-
-void eliminar(ListaReproduccion *arbol, int n, ListaReproduccion *&);
-void eliminarNodo(ListaReproduccion *nodoEliminar, ListaReproduccion *&principal);
-ListaReproduccion *minimo(ListaReproduccion *arbol);
-void reemplazar(ListaReproduccion *arbol, ListaReproduccion *nuevoNodo, ListaReproduccion *&principal);
-void destruirNodo(ListaReproduccion *nodo, ListaReproduccion *&principal);
+//Prototipo de funciones
+Music *crearMusic(char [], int, GeneroArtista*, GeneroArtista*, int &, Music* );
+void insertarMusic(Music *&, char [], int, GeneroArtista*, GeneroArtista*, int &, Music* );
+ListaReproduccion *crearLista(char [], int, int &, ListaReproduccion* );
+void insertarLista(ListaReproduccion *&, char [], int, int &, ListaReproduccion *);
+Music *editarMusic(Music* &, char [], int, GeneroArtista*, GeneroArtista*, int &);
+void ordenarMusic(Music *&, char [], int, GeneroArtista*, GeneroArtista*, int &, Music* );
+void listarMusic(Music *);
+void listarLista(ListaReproduccion *, int);
+void ordenar(Music* , Music* &);
+bool buscarMusic(Music* , char [], int, int &);
+bool buscarMusicGeneroArtista(Music* , char [], int, int , int &);
+bool nombreMusic(Music* , int );
+bool agregarConteo(Music* , int );
+void cancionEnLista(CancionesLista *&, int);
+bool ingresarCancion(ListaReproduccion* &, Music* &, int , int);
+bool listarCancionesLista(ListaReproduccion *, Music* , int );
+bool eliminarCancionLista(ListaReproduccion *, int , int , int );
+void eliminarListaTotal(CancionesLista *);
+bool editarLista(ListaReproduccion* &, int );
+void eliminar(ListaReproduccion *, int, ListaReproduccion *&);
+void eliminarNodo(ListaReproduccion *, ListaReproduccion *&);
+ListaReproduccion *minimo(ListaReproduccion *);
+void reemplazar(ListaReproduccion *, ListaReproduccion *, ListaReproduccion *&);
+void destruirNodo(ListaReproduccion *, ListaReproduccion *&);
 void eliminarListaTotal(CancionesLista *);
 
-/*bool inicializarMusica(Music* &nodo)
-{
-	FILE *archivo;
-	
-	archivo = fopen("datos/musica.txt", "rb");
-	
-	if(archivo == NULL)
-	{
-		return false;
-	}
-	else
-	{
-		while(fread(pMusic, sizeof(*pMusic), 1, archivo))
-		{
-			insertarMusic(nodo, pMusic->nombre, pMusic->duracion, GeneroArtista* artista, GeneroArtista* genero, int &id, Music* padre)
-		}
-	}
-	fclose(archivo);
-}*/
 
-/*bool guardarMusicaArchivo(Music* nuevoNodo)
-{
-	FILE *archivo;
-	
-	archivo = fopen("datos/musica.txt", "ab");
-	
-	if(archivo == NULL)
-	{
-		return false;
-	}
-	fwrite(nuevoNodo,sizeof(*nuevoNodo),1,archivo);
-	rewind(archivo);
-	fclose(archivo);
-}*/
-
+//Crea un nuevo nodo para el arbol de canciones
 Music *crearMusic(char nombre[], int duracion, GeneroArtista* artista, GeneroArtista* genero, int &id, Music* padre)
 {
 	Music *nuevoNodo = RESERVAR_MUSIC;
@@ -88,20 +82,11 @@ Music *crearMusic(char nombre[], int duracion, GeneroArtista* artista, GeneroArt
 	nuevoNodo->der = NULL;
 	nuevoNodo->izq = NULL;
 	nuevoNodo->padre = padre;
-
-	/*Music *nodo;
-	strcpy(nodo->nombre, nombre);
-	nodo->id = id;
-	nodo->duracion = duracion;
-	nodo->conteo = 0;
-	nodo->idArtista = artista->id;
-	nodo->idGenero = genero->id;
-	guardarMusicaArchivo(nodo);*/
 	return nuevoNodo;
 }
 
 
-
+//Inserta los elementos en el arbol de canciones, organizados por nombre
 void insertarMusic(Music *&music, char nombre[], int duracion, GeneroArtista* artista, GeneroArtista* genero, int &id, Music* padre)
 {
 	char datoMusic[30];
@@ -128,6 +113,7 @@ void insertarMusic(Music *&music, char nombre[], int duracion, GeneroArtista* ar
 	}
 }
 
+//Crea un nuevo nodo para el arbol de listas de reproduccion.
 ListaReproduccion *crearLista(char nombre[], int loggin, int &id, ListaReproduccion* padre)
 {
 	ListaReproduccion *nuevoNodo = RESERVAR_LISTA;
@@ -143,7 +129,7 @@ ListaReproduccion *crearLista(char nombre[], int loggin, int &id, ListaReproducc
 }
 
 
-
+//Inserta los elementos en el arbol de listas de reproduccion, organizados por id
 void insertarLista(ListaReproduccion *&listaReproduccion, char nombre[], int loggin, int &id, ListaReproduccion *padre)
 {
 	int dato;
@@ -170,6 +156,7 @@ void insertarLista(ListaReproduccion *&listaReproduccion, char nombre[], int log
 	}
 }
 
+
 Music *editarMusic(Music* &music, char nombre[], int duracion, GeneroArtista* artista, GeneroArtista* genero, int &id)
 {
 	id = id + 1;
@@ -184,6 +171,7 @@ Music *editarMusic(Music* &music, char nombre[], int duracion, GeneroArtista* ar
 	return music;
 }
 
+//Ordena un nuevo arbol de canciones, ordenado por tiempo de la cancion
 void ordenarMusic(Music *&music, char nombre[], int duracion, GeneroArtista* artista, GeneroArtista* genero, int &id, Music* padre)
 {
 	char datoMusic[30];
@@ -212,6 +200,7 @@ void ordenarMusic(Music *&music, char nombre[], int duracion, GeneroArtista* art
 	}
 }
 
+//Lista las canciones del arbol en inorden
 void listarMusic(Music *arbol){
 	if(arbol == NULL)
 	{
@@ -230,6 +219,7 @@ void listarMusic(Music *arbol){
 	}
 }
 
+//Muestra las listas de reproduccion por usuario
 void listarLista(ListaReproduccion *arbol, int loggin){
 	if(arbol == NULL)
 	{
@@ -247,6 +237,7 @@ void listarLista(ListaReproduccion *arbol, int loggin){
 	}
 }
 
+//Recorre el arbol ordenado por nombre, para ordenar el nuevo por tiempo
 void ordenar(Music* music, Music* &nuevoOrden)
 {
 	if(music == NULL)
@@ -262,6 +253,7 @@ void ordenar(Music* music, Music* &nuevoOrden)
 	
 }
 
+//Lista las canciones que coinciden por el nombre de la cancion
 bool buscarMusic(Music* music, char nombre[], int longitud, int &contador)
 {
 	
@@ -272,7 +264,6 @@ bool buscarMusic(Music* music, char nombre[], int longitud, int &contador)
 	else
 	{
 
-		//buscarMusic(music->izq, nombre, longitud, opcion);
 		if(strncmp(music->nombre, nombre, longitud) == 0)
 		{
 			contador =+ 1;
@@ -282,6 +273,8 @@ bool buscarMusic(Music* music, char nombre[], int longitud, int &contador)
 			printf("Genero: %s", music->idGenero->nombre);
 			printf("Artista: %s", music->idArtista->nombre);
 			printf("Agregada: %d\n", music->conteo);
+
+			//Continuar con la busqueda de más posibles coincidencias
 			if(music->izq != NULL)
 			{
 				buscarMusic(music->izq, nombre, longitud, contador);
@@ -305,6 +298,7 @@ bool buscarMusic(Music* music, char nombre[], int longitud, int &contador)
 
 }
 
+//Buscar canciones por el genero o artista, el recorrido se realiza en sentido preOrden
 bool buscarMusicGeneroArtista(Music* music, char nombre[], int longitud, int opcion, int &contador)
 {
 	int compara;
@@ -327,7 +321,6 @@ bool buscarMusicGeneroArtista(Music* music, char nombre[], int longitud, int opc
 			break;
 		}
 
-		//buscarMusic(music->izq, nombre, longitud, opcion);
 		if(compara == 0)
 		{
 			contador += 1;
@@ -348,6 +341,9 @@ bool buscarMusicGeneroArtista(Music* music, char nombre[], int longitud, int opc
 
 }
 
+
+//Muestra los datos de una cancion que coinciden con el id recibido por la funcion,
+//el recorrido es en sentido inOrden
 bool nombreMusic(Music* music, int idMusic)
 {
 	
@@ -375,6 +371,7 @@ bool nombreMusic(Music* music, int idMusic)
 
 }
 
+//Aumente el contado de veces que se agrego la cancion a una lista de reproduccion
 bool agregarConteo(Music* music, int idMusic)
 {
 	if(music == NULL)
@@ -395,6 +392,7 @@ bool agregarConteo(Music* music, int idMusic)
 
 }
 
+//Crea un nuevo nodo para cada id de cancion en la lista de reproduccion
 void cancionEnLista(CancionesLista *&lista, int idCancion)
 {
 	CancionesLista* nuevoNodo = RESERVAR_MEMORIA_LISTA;
@@ -412,6 +410,7 @@ void cancionEnLista(CancionesLista *&lista, int idCancion)
 	}
 }
 
+//Ingresar una nueva cancion a la lista de reproduccion
 bool ingresarCancion(ListaReproduccion* &listaReproduccion, Music* &music, int idLista, int idCancion)
 {
 	
@@ -434,6 +433,7 @@ bool ingresarCancion(ListaReproduccion* &listaReproduccion, Music* &music, int i
 
 }
 
+//Listar las canciones de la lista de reproduccion
 bool listarCancionesLista(ListaReproduccion *listaReproduccion, Music* music, int idMusic)
 {
 
@@ -468,6 +468,7 @@ bool listarCancionesLista(ListaReproduccion *listaReproduccion, Music* music, in
 
 }
 
+//Elimina una cancion de la lista de produccion, si el parametro total es igual a uno elimina todas las canciones de la lista
 bool eliminarCancionLista(ListaReproduccion *listaReproduccion, int idLista, int idMusic, int total)
 {
 
@@ -525,7 +526,8 @@ bool eliminarCancionLista(ListaReproduccion *listaReproduccion, int idLista, int
 
 }
 
-
+//Eliminar un nodo del arbol de listas de reproduccion.
+//El tercer parametro es necesario para mantener el enlace principal del arbol, por si se elimina el primer elemento de la lista
 void eliminar(ListaReproduccion *arbol,  int n, ListaReproduccion *&principal)
 {
 	if (arbol == NULL)
@@ -545,6 +547,7 @@ void eliminar(ListaReproduccion *arbol,  int n, ListaReproduccion *&principal)
 	}
 }
 
+//Comprobar si el nodo a eliminar tiene uno, dos o ningun hijo, y continua con el proceso de eliminar
 void eliminarNodo(ListaReproduccion *nodoEliminar, ListaReproduccion *&principal)
 {
 	if(nodoEliminar->izq && nodoEliminar->der)
@@ -573,6 +576,7 @@ void eliminarNodo(ListaReproduccion *nodoEliminar, ListaReproduccion *&principal
 	}
 }
 
+//Obtener el nodo minio del arbol, cuando el nodo a eliminar tiene 2 hijos.
 ListaReproduccion *minimo(ListaReproduccion *arbol)
 {	//Si el Arbol esta vacio
 	if(arbol==NULL)
@@ -589,6 +593,8 @@ ListaReproduccion *minimo(ListaReproduccion *arbol)
 	}
 }
 
+
+//Reemplazar los enlaces correspondientes del nodo a eliminar
 void reemplazar(ListaReproduccion *arbol, ListaReproduccion *nuevoNodo, ListaReproduccion *&principal)
 {
 	eliminarListaTotal(arbol->ptrCancion);
@@ -615,6 +621,7 @@ void reemplazar(ListaReproduccion *arbol, ListaReproduccion *nuevoNodo, ListaRep
 	}
 }
 
+//Destruir finalmente el nodo del arbol
 void destruirNodo(ListaReproduccion *nodo, ListaReproduccion *&principal)
 {
 	if(nodo->padre)
@@ -638,6 +645,7 @@ void destruirNodo(ListaReproduccion *nodo, ListaReproduccion *&principal)
 	free(nodo);
 }
 
+//Elimina toda la lista de canciones de la lista de reproduccion
 void eliminarListaTotal(CancionesLista *nodo)
 {
 	CancionesLista* aux = nodo;
@@ -650,6 +658,7 @@ void eliminarListaTotal(CancionesLista *nodo)
 	}
 }
 
+//Editar el nombre de la lista de reproduccion
 bool editarLista(ListaReproduccion* &lista, int id)
 {
 	char nombre[30];
